@@ -171,7 +171,7 @@ function renderHistory() {
   const today = dayKey();
   const todayWd = wdOf(today), mondayOffset = (todayWd + 6) % 7;
   const end = addDays(today, 6 - mondayOffset); // this week's Sunday
-  const start = addDays(end, -7 * 10 + 1);
+  const start = addDays(end, -7 * 6 + 1);
   let cells = DN.slice(1).concat(DN[0]).map(d => `<div class="h">${d}</div>`).join('');
   for (let k = start; k <= end; k = addDays(k, 1)) {
     const s = stats(k), fut = k > today;
@@ -182,7 +182,7 @@ function renderHistory() {
   }
   const wkStart = addDays(today, -mondayOffset); let wkKept = 0, wkSec = 0;
   for (let i = 0; i < 7; i++) { const k = addDays(wkStart, i); if (k > today) break; const s = stats(k); wkSec += s.sec; if (s.total && s.done === s.total) wkKept++; }
-  let h = `<div class="top"><div><div class="date">last 10 weeks</div><h1>History</h1></div>${nav('history')}</div>
+  let h = `<div class="top"><div><div class="date">last 6 weeks</div><h1>History</h1></div>${nav('history')}</div>
   <div class="wk"><div><b>${streak()}</b><span>day streak</span></div><div><b>${wkKept}</b><span>days kept this week</span></div><div><b>${fmtMin(wkSec)}</b><span>locked in this week</span></div></div>
   <div class="grid">${cells}</div><div class="legend"><span>■ none</span><span style="color:#1b6a33">■ half</span><span style="color:#30d158">■ all done</span></div>`;
   const k = selDay || today, s = stats(k);
@@ -370,6 +370,7 @@ if (location.search.includes('demo')) { // screenshot state only, never saved
   S.active = { id: 'biz', key: k, startedAt: Date.now() - 4662e3, acc: 0, running: true, chimed: false };
   for (let i = 1; i <= 6; i++) scheduled(addDays(k, -i)).forEach(t => setRec(addDays(k, -i), t.id, { sec: t.type === 'tick' ? 0 : 3600, done: i !== 3 || t.id === 'gym' }));
   if (location.search.includes('ov')) setTimeout(() => openOverlay('biz'), 50);
+  const vm = location.search.match(/v=(\w+)/); if (vm) view = vm[1];
 }
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => { });
 if ('serviceWorker' in navigator && !noSave) navigator.serviceWorker.register('./sw.js').catch(() => { });
